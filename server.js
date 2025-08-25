@@ -8,12 +8,14 @@ const wss = new WebSocket.Server({ port: process.env.PORT || 8080 });
 const rooms = new Map();
 
 function joinRoom(room, socket) {
+  console.log('join room');
   if (!rooms.has(room)) rooms.set(room, new Set());
   rooms.get(room).add(socket);
   socket.roomId = room;
 }
 
 function leaveRoom(socket) {
+  console.log('leave room');
   const room = socket.roomId;
   if (!room) return;
   const set = rooms.get(room);
@@ -31,7 +33,9 @@ function leaveRoom(socket) {
 }
 
 wss.on("connection", (ws) => {
+  console.log('connection...');
   ws.on("message", (raw) => {
+    console.log('msg received : ', JSON.parse(raw));
     let msg;
     try {
       msg = JSON.parse(raw);
